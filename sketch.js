@@ -108,7 +108,7 @@ class Quadtree {
 
 // p5.js sketch
 let quadtree;
-const NUM_POINTS = 500;
+const NUM_POINTS = 1;
 const CAPACITY = 4;
 
 function setup() {
@@ -127,6 +127,7 @@ function setup() {
     for (let i = 0; i < NUM_POINTS; i++) {
         const x = random(canvasWidth);
         const y = random(canvasHeight);
+        console.log(`Generated point: (${x.toFixed(2)}, ${y.toFixed(2)})`);
         const point = new Point(x, y);
         quadtree.insert(point);
     }
@@ -175,6 +176,11 @@ function draw() {
         textSize(14);
         text('Click and drag to query points', 10, height - 10);
     }
+    
+    // Display mouse coordinates
+    fill(0);
+    textSize(14);
+    text(`Mouse: (${Math.floor(mouseX)}, ${Math.floor(mouseY)})`, 10, 20);
 }
 
 function drawPoints(node) {
