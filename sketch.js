@@ -8,11 +8,12 @@ class Point {
 
 // Quadtree Rectangle class
 class Rectangle {
-    constructor(x, y, width, height) {
+    constructor(x, y, width, height, color = [255, 255, 255]) {
         this.x = x;
         this.y = y;
         this.width = width;
         this.height = height;
+        this.color = color; // RGB array, default is white [255, 255, 255]
     }
     
     contains(point) {
@@ -45,16 +46,19 @@ class Quadtree {
         const w = this.boundary.width / 2;
         const h = this.boundary.height / 2;
         
-        const ne = new Rectangle(x + w, y, w, h);
+        // Generate random color for each subdivided rectangle
+        const randomColor = () => random() > 0.5 ? [255, 255, 255] : [0, 0, 0];
+        
+        const ne = new Rectangle(x + w, y, w, h, randomColor());
         this.northeast = new Quadtree(ne, this.capacity);
         
-        const nw = new Rectangle(x, y, w, h);
+        const nw = new Rectangle(x, y, w, h, randomColor());
         this.northwest = new Quadtree(nw, this.capacity);
         
-        const se = new Rectangle(x + w, y + h, w, h);
+        const se = new Rectangle(x + w, y + h, w, h, randomColor());
         this.southeast = new Quadtree(se, this.capacity);
         
-        const sw = new Rectangle(x, y + h, w, h);
+        const sw = new Rectangle(x, y + h, w, h, randomColor());
         this.southwest = new Quadtree(sw, this.capacity);
         
         this.divided = true;
@@ -108,7 +112,7 @@ class Quadtree {
 
 // p5.js sketch
 let quadtree;
-const NUM_POINTS = 1;
+const NUM_POINTS = 25;
 const CAPACITY = 4;
 
 function setup() {
@@ -119,8 +123,9 @@ function setup() {
     const canvas = createCanvas(canvasWidth, canvasHeight);
     canvas.parent('sketch-container');
     
-    // Initialize quadtree
-    const boundary = new Rectangle(0, 0, canvasWidth, canvasHeight);
+    // Initialize quadtree with random color (white or black)
+    const randomColor = random() > 0.5 ? [255, 255, 255] : [0, 0, 0]; // Random white or black
+    const boundary = new Rectangle(0, 0, canvasWidth, canvasHeight, randomColor);
     quadtree = new Quadtree(boundary, CAPACITY);
     
     // Generate random points
@@ -198,6 +203,11 @@ function drawPoints(node) {
 
 function drawBoundaries(node) {
     const b = node.boundary;
+    
+    // Fill with rectangle color
+    fill(b.color[0], b.color[1], b.color[2]);
+    stroke(150);
+    strokeWeight(1);
     rect(b.x, b.y, b.width, b.height);
     
     if (node.divided) {
