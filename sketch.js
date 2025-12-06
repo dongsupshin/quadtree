@@ -108,11 +108,30 @@ class Quadtree {
         
         return found;
     }
+
+    flip() {
+        // Flip boundary y coordinate
+        const canvasHeight = 600;
+        this.boundary.y = canvasHeight - this.boundary.y - this.boundary.height;
+        
+        // Flip points' y coordinates
+        for (let p of this.points) {
+            p.y = canvasHeight - p.y;
+        }
+        
+        // Recursively flip child quadrants if they exist
+        if (this.divided) {
+            this.northeast.flip();
+            this.northwest.flip();
+            this.southeast.flip();
+            this.southwest.flip();
+        }
+    }
 }
 
 // p5.js sketch
 let quadtree;
-const NUM_POINTS = 25;
+const NUM_POINTS = 31;
 const CAPACITY = 4;
 
 function setup() {
@@ -216,4 +235,13 @@ function drawBoundaries(node) {
         drawBoundaries(node.southeast);
         drawBoundaries(node.southwest);
     }
+}
+
+function flipQuadtree() {
+    console.log("Flip button clicked!");
+    console.log("Before flip - NE color:", quadtree.northeast.boundary.color);
+    console.log("Before flip - SE color:", quadtree.southeast.boundary.color);
+    quadtree.flip();
+    console.log("After flip - NE color:", quadtree.northeast.boundary.color);
+    console.log("After flip - SE color:", quadtree.southeast.boundary.color);
 }
